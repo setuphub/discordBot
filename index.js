@@ -1,28 +1,33 @@
-const idServer = require('./id');
+const sqlite3 = require('sqlite3');
+const dataBase = new sqlite3.Database('./porrasF1.db');
 const {Client} = require('discord.js');
 const cliente = new Client({
     partials: ['MESSAGE', 'REACTION']
 });
 
-const token2 = idServer.token;
-const token = 'NzU1MDg0ODQ3MDU5NTY2NzMz.X1-JkA.5rVnOiPSuPW-2r3q2KHfKaFT92g';
+
+require('dotenv').config();
 
 // Id's de los canales
-const canalEntrada =  '755084093083091003';
-const canalBienvenida = '760456798590992396';
+const canalEntrada =  process.env.CANAL_ENTRADA;
+const canalBienvenida = process.env.CANAL_BIENVENIDA;
+const canalPorras = process.env.CANAL_PORRAS;
 
 // Id's de mensajes
-const mensajeEntrada = '755383591105724445';
+const mensajeEntrada = process.env.MENSAJE_ENTRADA;
 
 // Id's de roles
-const Roleveryone = '755077755422507070';
-const Roladmin = '756096073273049108';
-const RolValidado = '760459070339022858';
-const RolInvitado = '760445344432914443';
+const Roleveryone = process.env.ROL_EVERYONE;
+const Roladmin = process.env.ROL_ADMIN;
+const RolValidado = process.env.ROL_VALIDADO;
+const RolInvitado = process.env.ROL_INVITADO;
 
 
 
 const comandosImportanes = '```\n -Conectarse por ssh:\n ssh hackersh@hackershunters.com / *3ljG5Z3:Tpu7I ```';
+
+
+
 
 /* cliente contiene toda la info del servidor*/
 
@@ -66,13 +71,19 @@ cliente.on('messageReactionAdd', (reaction,user) =>{
 
 //Evento que recoge los mensajes que se escriben en el servidor
 cliente.on('message', message => {
-    console.log(message.channel.name);
 
     if(message.channel.name === '🛠pruebas'){
         console.log('Es el canal pruebas');
     }
     if(message.content === '!web'){
         message.channel.send('https://hackershunters.com');
+    }
+
+    if(message.channel.id === canalPorras){
+        let regex = new RegExp('/!porra(\s[a-zA-Z]*){5}/g'); //Arreglar expresion regular.No funciona cuando se manda mensaje en discord
+        if(regex.exec(message.content)){
+            console.log('se recibe bien');
+        }
     }
 
     if(message.content === '!comandos'){
@@ -85,4 +96,4 @@ cliente.on('message', message => {
     }
 })
 
-cliente.login(token);
+cliente.login(process.env.DISCORD_TOKEN);
